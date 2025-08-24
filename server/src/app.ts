@@ -1,11 +1,11 @@
-import express, { Application, NextFunction, Request, Response } from "express";
 import cors from "cors";
+import express, { Application, NextFunction, Request, Response } from "express";
 import morgan from "morgan";
 
-import globalErrorHandler from "./app/middleware/globalErrorHandler";
-import { MainRouter } from "./app/router";
 import cookieParser from "cookie-parser";
 import httpStatus from "http-status";
+import globalErrorHandler from "./app/middleware/globalErrorHandler";
+import { MainRouter } from "./app/router";
 
 const app: Application = express();
 
@@ -15,7 +15,7 @@ app.use(morgan("dev"));
 app.use(cookieParser());
 
 // ! rouutes
-app.use("/api/v1", MainRouter);
+app.use("/api", MainRouter);
 
 app.get("/", async (req: Request, res: Response, next: NextFunction) => {
   try {
