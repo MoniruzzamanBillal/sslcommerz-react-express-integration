@@ -10,13 +10,6 @@ const addNewProduct = async () => {
 
 // ! for getting all product
 const getAllProduct = async () => {
-  const transactionId = `TXN-${Date.now()}`;
-
-  console.log(transactionId);
-  console.log(process.env.STORE_ID);
-  console.log(process.env.STORE_PASSWORD);
-  console.log(process.env.SSL_PAYMENT_URL);
-
   const result = await productModel.find();
 
   return result;
