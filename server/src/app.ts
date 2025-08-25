@@ -1,9 +1,9 @@
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import express, { Application, NextFunction, Request, Response } from "express";
-import morgan from "morgan";
-
-import cookieParser from "cookie-parser";
 import httpStatus from "http-status";
+import morgan from "morgan";
 import globalErrorHandler from "./app/middleware/globalErrorHandler";
 import { MainRouter } from "./app/router";
 
@@ -13,6 +13,7 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan("dev"));
 app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // ! rouutes
 app.use("/api", MainRouter);
