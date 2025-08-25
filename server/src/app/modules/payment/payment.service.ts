@@ -1,7 +1,9 @@
 import httpStatus from "http-status";
+import mongoose from "mongoose";
 import AppError from "../../Error/AppError";
 import { productModel } from "../product/product.model";
 import { sslServices } from "../ssl/ssl.service";
+import { PAYMENTSTATUS } from "./payment.constant";
 import { paymentModel } from "./payment.model";
 
 type TOrderPayload = {
@@ -18,10 +20,6 @@ const orderItem = async (payload: TOrderPayload) => {
 
   const transactionId = `TXN-${Date.now()}`;
 
-  //   console.log(transactionId);
-
-  //   console.log(itemData);
-
   const paymentDataPayload = {
     price: parseFloat(itemData?.price),
     transactionId,
@@ -29,8 +27,6 @@ const orderItem = async (payload: TOrderPayload) => {
     userName: "Moniruzzaman",
     userEmail: "monir@gmail.com",
   };
-
-  //   console.log(paymentDataPayload);
 
   //   ! create payment data
   await paymentModel.create({ transactionId, productId: itemData?._id });
@@ -46,8 +42,41 @@ const orderItem = async (payload: TOrderPayload) => {
 
 // ! for success payment data
 const successfullyPayment = async (payload) => {
-  console.log(payload?.tran_id);
-  console.log(payload);
+  // ! find the payment record
+  const paymentData = await paymentModel.findOne({
+    transactionId: payload?.tran_id,
+  });
+
+  const session = await mongoose.startSession();
+
+  try {
+    session.startTransaction();
+
+    // ! update the payment record to complete
+    await paymentModel.findOneAndUpdate(
+      {
+        transactionId: payload?.tran_id,
+      },
+      { status: PAYMENTSTATUS.Completed },
+      { session }
+    );
+
+    // ! update the inventory count of product
+    await productModel.findByIdAndUpdate(
+      paymentData?.productId,
+      { $inc: { inventoryCount: -1 } },
+      { session }
+    );
+
+    await session.commitTransaction();
+    await session.endSession();
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+    console.log(error);
+  }
+
+  //
 };
 
 // ! for fail payment data
