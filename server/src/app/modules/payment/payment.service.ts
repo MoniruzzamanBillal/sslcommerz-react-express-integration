@@ -81,12 +81,21 @@ const successfullyPayment = async (payload) => {
 
 // ! for fail payment data
 const failPayment = async (payload) => {
-  console.log(payload);
+  // ! update the payment record to failed
+  await paymentModel.findOneAndUpdate(
+    {
+      transactionId: payload?.tran_id,
+    },
+    { status: PAYMENTSTATUS.Failed }
+  );
 };
 
 // ! for canceling order
 const cancelPayment = async (payload) => {
-  console.log(payload);
+  // ! delete the payment record
+  await paymentModel.findOneAndDelete({
+    transactionId: payload?.tran_id,
+  });
 };
 
 //
