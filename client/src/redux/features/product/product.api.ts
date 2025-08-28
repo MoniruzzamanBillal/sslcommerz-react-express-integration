@@ -14,9 +14,20 @@ const productApi = baseApi.injectEndpoints({
       },
     }),
 
+    // ! for ordering product
+    orderItem: builder.mutation({
+      query: (payload) => {
+        return {
+          url: `/payment/order-item`,
+          method: "POST",
+          body: payload,
+        };
+      },
+    }),
+
     //
   }),
 });
 
 //
-export const { useGetAllProductQuery } = productApi;
+export const { useGetAllProductQuery, useOrderItemMutation } = productApi;

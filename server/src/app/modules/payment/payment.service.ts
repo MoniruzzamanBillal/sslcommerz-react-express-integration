@@ -53,7 +53,7 @@ const successfullyPayment = async (payload) => {
     session.startTransaction();
 
     // ! update the payment record to complete
-    await paymentModel.findOneAndUpdate(
+    const updatedPaymentData = await paymentModel.findOneAndUpdate(
       {
         transactionId: payload?.tran_id,
       },
@@ -70,6 +70,8 @@ const successfullyPayment = async (payload) => {
 
     await session.commitTransaction();
     await session.endSession();
+
+    return updatedPaymentData;
   } catch (error) {
     await session.abortTransaction();
     await session.endSession();
@@ -82,20 +84,24 @@ const successfullyPayment = async (payload) => {
 // ! for fail payment data
 const failPayment = async (payload) => {
   // ! update the payment record to failed
-  await paymentModel.findOneAndUpdate(
+  const failPaymentData = await paymentModel.findOneAndUpdate(
     {
       transactionId: payload?.tran_id,
     },
     { status: PAYMENTSTATUS.Failed }
   );
+
+  return failPaymentData;
 };
 
 // ! for canceling order
 const cancelPayment = async (payload) => {
   // ! delete the payment record
-  await paymentModel.findOneAndDelete({
+  const deletePayment = await paymentModel.findOneAndDelete({
     transactionId: payload?.tran_id,
   });
+
+  return deletePayment;
 };
 
 //

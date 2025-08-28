@@ -3,6 +3,8 @@ import catchAsync from "../../util/catchAsync";
 import sendResponse from "../../util/sendResponse";
 import { paymentServices } from "./payment.service";
 
+const redirectURL = "http://localhost:5173";
+
 // ! for ordering an item
 const orderItem = catchAsync(async (req, res) => {
   const result = await paymentServices.orderItem(req?.body);
@@ -19,36 +21,27 @@ const orderItem = catchAsync(async (req, res) => {
 const successfullyPayment = catchAsync(async (req, res) => {
   const result = await paymentServices.successfullyPayment(req?.body);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Product ordered successfully !!!",
-    data: result,
-  });
+  if (result) {
+    res.redirect(`${redirectURL}/purchase-success`);
+  }
 });
 
 // ! for fail payment data
 const failPayment = catchAsync(async (req, res) => {
   const result = await paymentServices.failPayment(req?.body);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Product ordered failed!!!",
-    data: result,
-  });
+  if (result) {
+    res.redirect(`${redirectURL}/purchase-fail`);
+  }
 });
 
 // ! for canceling order
 const cancelPayment = catchAsync(async (req, res) => {
   const result = await paymentServices.cancelPayment(req?.body);
 
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Product ordered canceled !!!",
-    data: result,
-  });
+  if (result) {
+    res.redirect(`${redirectURL}`);
+  }
 });
 
 //

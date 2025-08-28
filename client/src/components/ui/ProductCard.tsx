@@ -1,11 +1,24 @@
+import { useOrderItemMutation } from "@/redux/features/product/product.api";
 import { TProduct } from "@/types/globalTypes";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "./button";
 
 const ProductCard = ({ product }: { product: TProduct }) => {
+  const [orderItem, { isLoading }] = useOrderItemMutation();
+
   // ! for ordering item
-  const handleOrderItem = (productId: string) => {
+  const handleOrderItem = async (productId: string) => {
     console.log(productId);
+
+    const result = await orderItem({ productId });
+
+    // console.log(result);
+
+    // console.log(result?.data);
+
+    if (result?.data?.success) {
+      window.location.href = result?.data?.data;
+    }
   };
 
   return (
@@ -38,13 +51,14 @@ const ProductCard = ({ product }: { product: TProduct }) => {
 
       <div className="buttonSectio pb-2 px-2 flex justify-between   ">
         <Button
+          disabled={isLoading}
           onClick={() => handleOrderItem(product?._id)}
           className="   text-center text-sm font-semibold text-white transition duration-100  bg-prime100 hover:bg-prime200 "
         >
           <span>
             <ShoppingCart size={24} />
           </span>
-          <span>Order Item</span>
+          <span>{isLoading ? "Orderind Item..." : "Order Item"}</span>
         </Button>
       </div>
       {/*  */}
