@@ -33,8 +33,6 @@ const orderItem = async (payload: TOrderPayload) => {
 
   const sslResult = await sslServices.initPayment(paymentDataPayload);
 
-  //   console.log(sslResult?.GatewayPageURL);
-
   return sslResult?.GatewayPageURL;
 
   //
@@ -42,7 +40,7 @@ const orderItem = async (payload: TOrderPayload) => {
 
 // ! for success payment data
 const successfullyPayment = async (payload) => {
-  // ! find the payment record
+  // * find the payment record
   const paymentData = await paymentModel.findOne({
     transactionId: payload?.tran_id,
   });
@@ -83,7 +81,7 @@ const successfullyPayment = async (payload) => {
 
 // ! for fail payment data
 const failPayment = async (payload) => {
-  // ! update the payment record to failed
+  // * update the payment record to failed
   const failPaymentData = await paymentModel.findOneAndUpdate(
     {
       transactionId: payload?.tran_id,

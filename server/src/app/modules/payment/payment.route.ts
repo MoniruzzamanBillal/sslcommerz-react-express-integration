@@ -7,7 +7,9 @@ const router = Router();
 router.post("/order-item", paymentController.orderItem);
 
 router.post("/success", paymentController.successfullyPayment);
+
 router.post("/fail", paymentController.failPayment);
+
 router.post("/cancel", paymentController.cancelPayment);
 
 //
